@@ -1,13 +1,24 @@
+# application.yml do seu API Gateway
 spring:
   application:
     name: api-gateway
   cloud:
     gateway:
       routes:
-        - id: servico-service
+        - id: servico-service # Rota para o serviço de serviços
           uri: lb://servico-service
           predicates:
             - Path=/api/servicos/**
+
+        - id: agendamento-service # Rota para o serviço de agendamento (agendamentos)
+          uri: lb://agendamento-service-AgendeNail
+          predicates:
+            - Path=/api/agendamentos/**
+            
+        - id: bloqueio-horario-service # <--- NOVA ROTA: para os endpoints de bloqueio
+          uri: lb://agendamento-service-AgendeNail # Aponta para o mesmo serviço de agendamento, onde está a lógica de bloqueio
+          predicates:
+            - Path=/api/bloqueios/** # O caminho que o Gateway vai interceptar
 server:
   port: 8080
 
